@@ -3,39 +3,7 @@ import { ref, onValue, get } from 'firebase/database';
 import { database } from '@/lib/firebase';
 import { Teacher, AttendanceRecord } from '@/types/teacher';
 import { toast } from '@/hooks/use-toast';
-
-// Parse comma-separated status to determine attendance
-function parseAttendanceStatus(status: string): 'present' | 'absent' | 'late' | 'left_early' | 'left_on_time' {
-  const statusLower = status.toLowerCase();
-  
-  // Check for absent first (highest priority)
-  if (statusLower.includes('absent')) {
-    return 'absent';
-  }
-  
-  // Check for left_on_time
-  if (statusLower.includes('left_on_time') || statusLower.includes('left on time')) {
-    return 'left_on_time';
-  }
-  
-  // Check for left_early
-  if (statusLower.includes('left_early') || statusLower.includes('left early')) {
-    return 'left_early';
-  }
-  
-  // Check for late
-  if (statusLower.includes('late')) {
-    return 'late';
-  }
-  
-  // Check for present
-  if (statusLower.includes('present')) {
-    return 'present';
-  }
-  
-  // Default to absent if status is unclear
-  return 'absent';
-}
+import { parseAttendanceStatus } from '@/utils/statusParser';
 
 export function useTeachers() {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
